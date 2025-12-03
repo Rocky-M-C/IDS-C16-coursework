@@ -1,5 +1,4 @@
 library(tidyverse)
-library(dplyr)
 #Reading the CSV file 
 dp <- read_csv("gdp-per-capita-worldbank.csv")
 #Rename first column to "country"
