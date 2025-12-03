@@ -3,23 +3,36 @@ library(dplyr)
 #Reading the CSV file 
 gdp_countries <- read_csv("gdp-per-capita-worldbank.csv") %>% clean_names()
 head(gdp_countries)
-#arranging and removing unwanted columns
-gdp_countries <- gdp %>% distinct(country) %>% arrange(country)
-#pivot from wide to long if years are columns
-pivot_years_if_needed <- function(df, value_name = "value") {year_cols <- names(df)[grepl("^\\d{4}$", names(df))]
+#Clean country names (trim/normalize whitespace)
+gdp <- gdp %>%
+  mutate(country = str_squish(as.character(country))) %>%
+  filter(!is.na(country) & country != "")
+#pivot year columns (wide -> long)
+pivot_years_if_needed <- function(df, value_name = "gdp_per_capita") {year_cols <- names(df)[str_detect(names(df), "^\\d{4}$")]
   if (length(year_cols) > 0) {
     df_long <- df %>%
-      pivot_longer(cols = all_of(year_cols),
-                   names_to = "year",
-                   values_to = value_name) %>%
-      mutate(year = as.integer(year))
+      pivot_longer(
+        cols = all_of(year_cols),
+        names_to = "year",
+        values_to = value_name
+      ) %>%
+      mutate(
+        year = as.integer(year),
+      )
     return(df_long)
   } else {
+    # no year-like columns found; return df as-is
     return(df)
   }
 }
-#prefer 'country' and 'year'
-if(!"country" %in% names(gdp)) gdp <- gdp %>% rename(country = 1)
-#Check and mannually fix
-gdp_countries <- gdp %>% distinct(country) %>% arrange(country)
-view(gdp_countries)
+#Apply pivoting
+gdp_long <- pivot_years_if_needed(gdp, value_name = "gdp_per_capita")
+#Convert gdp_per_capita to numeric
+if ("gdp_per_capita" %in% names(gdp_clean)) {gdp_clean <- gdp_clean %>%mutate(gdp_per_capita = as.numeric(gdp_per_capita))}
+#Create a tidy list of countries (unique, sorted)
+gdp_countries <- gdp_clean %>%
+  distinct(country) %>%
+  arrange(country)
+
+
+
