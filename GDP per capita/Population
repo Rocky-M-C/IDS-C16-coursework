@@ -1,5 +1,5 @@
 library(tidyverse)
-#Reading the CSV file 
+#gdp per cpita, reading the CSV file 
 dp <- read_csv("gdp-per-capita-worldbank.csv")
 #Rename first column to "country"
 names(gdp)[1] <- "country"
@@ -8,7 +8,7 @@ gdp <- gdp %>% mutate(country = str_trim(country)) %>% filter(country != "", !is
 #Convert from wide to long format
 gdp_long <- gdp %>%
   pivot_longer(cols = -country, names_to = "year", values_to = "gdp_per_capita")
-#Convert to numbers and remove missing values
+#Convert to numbers and remove missing values and arrange the data
 gdp_clean <- gdp_long %>%
   mutate(year = as.numeric(year), gdp_per_capita = as.numeric(gdp_per_capita)) %>% filter(!is.na(year), !is.na(gdp_per_capita)) %>%
   arrange(country, year)
