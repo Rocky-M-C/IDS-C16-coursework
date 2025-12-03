@@ -11,14 +11,8 @@ gdp <- gdp %>%
 pivot_years_if_needed <- function(df, value_name = "gdp_per_capita") {year_cols <- names(df)[str_detect(names(df), "^\\d{4}$")]
   if (length(year_cols) > 0) {
     df_long <- df %>%
-      pivot_longer(
-        cols = all_of(year_cols),
-        names_to = "year",
-        values_to = value_name
-      ) %>%
-      mutate(
-        year = as.integer(year),
-      )
+      pivot_longer(cols = all_of(year_cols), names_to = "year", values_to = value_name) %>%
+      mutate(year = as.integer(year),)
     return(df_long)
   } else {
     # no year-like columns found; return df as-is
@@ -47,12 +41,7 @@ pop_long <- pop %>%
   pivot_longer(cols = -country, names_to = "year", values_to = "population")
 #Convert to numbers and remove missing values
 pop_clean <- pop_long %>%
-  mutate(
-    year = as.numeric(year),
-    population = as.numeric(population)
-  ) %>%
-  filter(!is.na(year), !is.na(population)) %>%
-  arrange(country, year)
+  mutate(year = as.numeric(year), population = as.numeric(population)) %>% filter(!is.na(year), !is.na(population)) %>% arrange(country, year)
 #Show results
 head(pop_clean, 12)
 print(paste("Total rows:", nrow(pop_clean)))
