@@ -1,0 +1,12 @@
+library(tidyverse)
+library(dplyr)
+#Reading the CSV file 
+gdp_countries <- read_csv("gdp-per-capita-worldbank.csv") %>% clean_names()
+head(gdp_countries)
+#arranging and removing unwanted columns
+gdp_countries <- gdp %>% distinct(country) %>% arrange(country)
+#prefer 'country' and 'year'
+if(!"country" %in% names(gdp)) gdp <- gdp %>% rename(country = 1)
+#Check and mannually fix
+gdp_countries <- gdp %>% distinct(country) %>% arrange(country)
+view(gdp_countries)
