@@ -5,6 +5,19 @@ gdp_countries <- read_csv("gdp-per-capita-worldbank.csv") %>% clean_names()
 head(gdp_countries)
 #arranging and removing unwanted columns
 gdp_countries <- gdp %>% distinct(country) %>% arrange(country)
+#pivot from wide to long if years are columns
+pivot_years_if_needed <- function(df, value_name = "value") {year_cols <- names(df)[grepl("^\\d{4}$", names(df))]
+  if (length(year_cols) > 0) {
+    df_long <- df %>%
+      pivot_longer(cols = all_of(year_cols),
+                   names_to = "year",
+                   values_to = value_name) %>%
+      mutate(year = as.integer(year))
+    return(df_long)
+  } else {
+    return(df)
+  }
+}
 #prefer 'country' and 'year'
 if(!"country" %in% names(gdp)) gdp <- gdp %>% rename(country = 1)
 #Check and mannually fix
