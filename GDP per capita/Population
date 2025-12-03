@@ -15,7 +15,7 @@ pivot_years_if_needed <- function(df, value_name = "gdp_per_capita") {year_cols 
       mutate(year = as.integer(year),)
     return(df_long)
   } else {
-    # no year-like columns found; return df as-is
+# no year-like columns found; return df as-is
     return(df)
   }
 }
