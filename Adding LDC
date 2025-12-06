@@ -1,11 +1,11 @@
 #adding LDC to the Table 
 
 ldc_list <- c('Angola', 'Benin', 'Burkina Faso', 'Burundi', 'Central African Republic', 'Chad', 'Comoros', 
-              'Democratic Republic of the Congo', 'Djibouti', 'Eritrea', 'Ethiopia', 'Gambia', 'Guinea', 
+              'Democratic Republic of Congo', 'Djibouti', 'Eritrea', 'Ethiopia', 'Gambia', 'Guinea', 
               'Guinea-Bissau', 'Lesotho', 'Liberia', 'Madagascar', 'Malawi', 'Mali', 'Mauritania', 'Mozambique', 
               'Niger', 'Rwanda', 'Senegal', 'Sierra Leone', 'Somalia', 'South Sudan', 'Sudan', 'Togo', 
-              'Uganda', 'United Republic of Tanzania', 'Zambia', 'Afghanistan', 'Bangladesh', 'Cambodia', 
-              'Lao People’s Democratic Republic', 'Myanmar', 'Nepal', 'Timor-Leste', 'Yemen', 'Haiti', 'Kiribati', 
+              'Uganda', 'Tanzania', 'Zambia', 'Afghanistan', 'Bangladesh', 'Cambodia', 
+              'Laos', 'Myanmar', 'Nepal', 'East Timor', 'Yemen', 'Haiti', 'Kiribati', 
               'Solomon Islands', 'Tuvalu')
 
 #checking if the list has all values 
