@@ -230,23 +230,13 @@ print(plot5)
 ggsave("5_gdp_vs_neet.png", plot5, width = 12, height = 7, dpi = 300)
 
 # 11. PRINT SUMMARY TABLES
-
-cat("\n========================================\n")
-cat("GDP GROWTH RATES (1990-2020)\n")
-cat("========================================\n")
 print(gdp_growth %>% 
         select(Continent, annual_growth) %>%
         arrange(desc(annual_growth)))
 
-cat("\n========================================\n")
-cat("NEET CHANGE (2015-2020)\n")
-cat("========================================\n")
 print(neet_change %>% 
         arrange(change))
 
-cat("\n========================================\n")
-cat("CORRELATION: GDP vs NEET (2020)\n")
-cat("========================================\n")
 correlation <- cor(scatter_data$gdp_per_capita, scatter_data$neet_rate, use = "complete.obs")
 cat("Correlation coefficient:", round(correlation, 3), "\n")
 if (correlation < 0) {
@@ -254,26 +244,6 @@ if (correlation < 0) {
 } else {
   cat("Interpretation: Positive correlation - higher GDP tends to associate with higher NEET rates\n")
 }
-
-# 12. EXPORT SUMMARY DATA
-
-write_csv(gdp_growth, "summary_gdp_growth.csv")
-write_csv(neet_change, "summary_neet_change.csv")
-write_csv(scatter_data, "data_gdp_neet_2020.csv")
-
-cat("\n========================================\n")
-cat("ANALYSIS COMPLETE!\n")
-cat("========================================\n")
-cat("Generated files:\n")
-cat("  - 1_gdp_trends.png\n")
-cat("  - 2_growth_rates.png\n")
-cat("  - 3_neet_trends.png\n")
-cat("  - 4_neet_change.png\n")
-cat("  - 5_gdp_vs_neet.png\n")
-cat("  - summary_gdp_growth.csv\n")
-cat("  - summary_neet_change.csv\n")
-cat("  - data_gdp_neet_2020.csv\n")
-cat("========================================\n")
 
 # YOUTH NEET RATES BY CONTINENT - BAR CHART (1990-2022)
 
@@ -416,10 +386,6 @@ ggsave("neet_rates_selected_years.png",
 
 # 6. PRINT SUMMARY STATISTICS
 
-cat("\n========================================\n")
-cat("NEET RATES SUMMARY (1990-2022)\n")
-cat("========================================\n\n")
-
 summary_stats <- neet_by_continent_year %>%
   group_by(Continent) %>%
   summarise(
@@ -432,17 +398,3 @@ summary_stats <- neet_by_continent_year %>%
 
 print(summary_stats)
 
-# Export summary data
-write_csv(neet_by_continent_year, "neet_rates_by_continent_1990_2022.csv")
-write_csv(summary_stats, "neet_summary_statistics.csv")
-
-cat("\n========================================\n")
-cat("CHARTS CREATED SUCCESSFULLY!\n")
-cat("========================================\n")
-cat("Generated files:\n")
-cat("  - neet_rates_bar_chart_1990_2022.png (all years, grouped)\n")
-cat("  - neet_rates_faceted_1990_2022.png (separate panel per continent)\n")
-cat("  - neet_rates_selected_years.png (key years only)\n")
-cat("  - neet_rates_by_continent_1990_2022.csv (data export)\n")
-cat("  - neet_summary_statistics.csv (summary stats)\n")
-cat("========================================\n")
