@@ -1,0 +1,57 @@
+library(tidyverse)
+
+# 1. GDP per capita
+gdp <- read_csv("gdp-per-capita-worldbank.csv")
+names(gdp)[1] <- "country"
+gdp <- gdp %>% 
+  mutate(country = str_trim(country)) %>% 
+  filter(country != "", !is.na(country))
+
+gdp_clean <- gdp %>%
+  pivot_longer(cols = -country, names_to = "year", values_to = "gdp_per_capita") %>%
+  mutate(year = as.numeric(year), gdp_per_capita = as.numeric(gdp_per_capita)) %>% 
+  filter(!is.na(year), !is.na(gdp_per_capita)) %>%
+  arrange(country, year)
+
+# 2. Population
+pop <- read_csv("population.csv")
+names(pop)[1] <- "country"
+pop <- pop %>% 
+  mutate(country = str_trim(country)) %>%
+  filter(country != "", !is.na(country))
+
+pop_clean <- pop %>%
+  pivot_longer(cols = -country, names_to = "year", values_to = "population") %>%
+  mutate(year = as.numeric(year), population = as.numeric(population)) %>% 
+  filter(!is.na(year), !is.na(population)) %>% 
+  arrange(country, year)
+
+# 3. Continents
+continents <- read.csv('/Users/katar/Downloads/data sets/continents-according-to-our-world-in-data.csv')
+continents <- continents %>%
+  arrange(Continent) %>%
+  select(-Code, -Year)
+
+# 4. Youth NEET
+Youth_NEET <- read.csv('/Users/katar/Downloads/data sets/youth-not-in-education-employment-training.csv')
+Youth_NEET <- Youth_NEET %>%
+  left_join(continents, by = 'Entity') %>%
+  arrange(Continent, Year) %>%
+  rename(YNEET = Share.of.youth.not.in.education..employment.or.training..total....of.youth.population.,
+         country = Entity,
+         year = Year)
+
+# 5. Combine all four tables
+combined_data <- gdp_clean %>%
+  full_join(pop_clean, by = c("country", "year")) %>%
+  full_join(Youth_NEET, by = c("country", "year")) %>%
+  arrange(country, year)
+
+# View the combined data
+View(combined_data)
+print(paste("Total rows:", nrow(combined_data)))
+print(paste("Total countries:", n_distinct(combined_data$country)))
+print(paste("Year range:", min(combined_data$year, na.rm = TRUE), "-", max(combined_data$year, na.rm = TRUE)))
+
+# Optional: Save to CSV
+write_csv(combined_data, "combined_data.csv")
