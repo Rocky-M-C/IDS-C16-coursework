@@ -19,7 +19,7 @@ library(ggplot2)
 
 #plot the graph between weighted NEET and year
 ggplot(p, aes(x = Year, y = NEET_weighted, colour = Continent)) +
-  geom_smooth(linewidth = 1) +
+  geom_smooth(se = FALSE, linewidth = 1) +
   scale_colour_manual(
     values = c(
       "Africa" = "red",
@@ -38,11 +38,12 @@ ggplot(p, aes(x = Year, y = NEET_weighted, colour = Continent)) +
   ) +
   theme_minimal()
 
+
 #plot the graph for Asia, Africa and Oceania
 plot_1 <- p %>%
   filter(Continent %in% c('Africa', 'Asia', 'Oceania')) %>%
   ggplot(aes(x = Year, y = NEET_weighted, colour = Continent)) +
-  geom_smooth(linewidth = 1) +
+  geom_smooth(se = FALSE, linewidth = 1) +
   scale_colour_manual(
     values = c(
       "Africa" = "red",
@@ -58,14 +59,12 @@ plot_1 <- p %>%
   theme_minimal()
 print(plot_1)
 
-# -------------------------------------------------------------------------
-
 
 #plot the graph for Europe, North America, South America 
 plot_2 <- p %>%
   filter(Continent %in% c('Europe', 'North America', 'South America')) %>%
   ggplot(aes(x = Year, y = NEET_weighted, colour = Continent)) +
-  geom_smooth(linewidth = 1) +
+  geom_smooth(se = FALSE, linewidth = 1) +
   scale_colour_manual(
     values = c(
       "Europe" = "darkgreen",
@@ -86,10 +85,11 @@ print(plot_2)
 date_filtered <- Final_Table %>%
   filter(Year >= 2020)
 
+
 plot_3 <- date_filtered %>%
   filter(Continent %in% c('Africa', 'Asia', 'Oceania')) %>%
   ggplot(aes(x = Year, y = NEET_weighted, colour = Continent)) +
-  geom_smooth(linewidth = 1) +
+  geom_smooth(se = FALSE, linewidth = 1) +
   scale_colour_manual(
     values = c(
       "Africa" = "red",
@@ -108,7 +108,7 @@ print(plot_3)
 plot_4 <- date_filtered %>%
   filter(Continent %in% c('Europe', 'North America', 'South America')) %>%
   ggplot(aes(x = Year, y = NEET_weighted, colour = Continent)) +
-  geom_smooth(linewidth = 1) +
+  geom_smooth(se = FALSE, linewidth = 1) +
   scale_colour_manual(
     values = c(
       "Europe" = "darkgreen",
