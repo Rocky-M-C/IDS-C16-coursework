@@ -1,42 +1,36 @@
 library(tidyverse)
 
-# GDP per capita, reading the CSV file 
-gdp <- read_csv("gdp-per-capita-worldbank.csv")  # Changed 'dp' to 'gdp'
-
-# Rename first column to "country"
+# GDP per capita
+gdp <- read_csv("gdp-per-capita-worldbank.csv")
 names(gdp)[1] <- "country"
-
-# Clean country names
 gdp <- gdp %>% 
   mutate(country = str_trim(country)) %>% 
   filter(country != "", !is.na(country))
 
-# Convert year columns to numbers and remove missing values
+# Pivot to long format
 gdp_clean <- gdp %>%
-  mutate(across(-country, as.numeric)) %>%
-  filter(country != "", !is.na(country))
+  pivot_longer(cols = -country, names_to = "year", values_to = "gdp_per_capita") %>%
+  mutate(year = as.numeric(year), gdp_per_capita = as.numeric(gdp_per_capita)) %>% 
+  filter(!is.na(year), !is.na(gdp_per_capita)) %>%
+  arrange(country, year)
 
-# Show results
 head(gdp_clean)
 print(paste("Total rows:", nrow(gdp_clean)))
 
-# Population, Read the raw CSV file uploaded
+# Population
 pop <- read_csv("population.csv")
-
-# Rename first column to "country"
 names(pop)[1] <- "country"
-
-# Clean country names
 pop <- pop %>% 
   mutate(country = str_trim(country)) %>%
   filter(country != "", !is.na(country))
 
-# Convert year columns to numbers and remove missing values
+# Pivot to long format
 pop_clean <- pop %>%
-  mutate(across(-country, as.numeric)) %>%
-  filter(country != "", !is.na(country))
+  pivot_longer(cols = -country, names_to = "year", values_to = "population") %>%
+  mutate(year = as.numeric(year), population = as.numeric(population)) %>% 
+  filter(!is.na(year), !is.na(population)) %>% 
+  arrange(country, year)
 
-# Show results
 head(pop_clean, 12)
 print(paste("Total rows:", nrow(pop_clean)))
 print(paste("Countries:", n_distinct(pop_clean$country)))
