@@ -5,9 +5,6 @@ dp <- read_csv("gdp-per-capita-worldbank.csv")
 names(gdp)[1] <- "country"
 #Clean country names
 gdp <- gdp %>% mutate(country = str_trim(country)) %>% filter(country != "", !is.na(country))
-#Convert from wide to long format
-gdp_long <- gdp %>%
-  pivot_longer(cols = -country, names_to = "year", values_to = "gdp_per_capita")
 #Convert to numbers and remove missing values and arrange the data
 gdp_clean <- gdp_long %>%
   mutate(year = as.numeric(year), gdp_per_capita = as.numeric(gdp_per_capita)) %>% filter(!is.na(year), !is.na(gdp_per_capita)) %>%
@@ -25,9 +22,6 @@ names(pop)[1] <- "country"
 pop <- pop %>% 
   mutate(country = str_trim(country)) %>%
   filter(country != "", !is.na(country))
-#Convert from wide to long format
-pop_long <- pop %>%
-  pivot_longer(cols = -country, names_to = "year", values_to = "population")
 #Convert to numbers and remove missing values
 pop_clean <- pop_long %>%
   mutate(year = as.numeric(year), population = as.numeric(population)) %>% filter(!is.na(year), !is.na(population)) %>% arrange(country, year)
