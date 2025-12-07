@@ -53,5 +53,5 @@ print(paste("Total rows:", nrow(combined_data)))
 print(paste("Total countries:", n_distinct(combined_data$country)))
 print(paste("Year range:", min(combined_data$year, na.rm = TRUE), "-", max(combined_data$year, na.rm = TRUE)))
 
-# Optional: Save to CSV
+# Save to CSV
 write_csv(combined_data, "combined_data.csv")
