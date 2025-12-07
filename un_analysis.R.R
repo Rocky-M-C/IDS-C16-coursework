@@ -1,7 +1,5 @@
-# ============================================================================
 # UN SUSTAINABLE DEVELOPMENT GOALS ANALYSIS (1990-2020)
 # Targets: Economic Growth & Youth NEET Reduction
-# ============================================================================
 
 library(tidyverse)
 library(ggplot2)
@@ -10,9 +8,7 @@ library(scales)
 # Set working directory to where your CSV files are located
 # setwd("YOUR_PATH_HERE")
 
-# ============================================================================
 # 1. LOAD AND CLEAN DATA
-# ============================================================================
 
 # Load continents data
 continents <- read_csv("Continents according to Our World in Data.csv")
@@ -38,9 +34,7 @@ neet_clean <- neet %>%
   filter(Continent %in% c("Africa", "Asia", "Europe", "North America", "South America", "Oceania")) %>%
   filter(!is.na(neet_rate))
 
-# ============================================================================
 # 2. CALCULATE CONTINENTAL AVERAGES
-# ============================================================================
 
 # GDP trends by continent
 gdp_trends <- gdp_clean %>%
@@ -52,9 +46,7 @@ neet_trends <- neet_clean %>%
   group_by(Continent, year) %>%
   summarise(avg_neet = mean(neet_rate, na.rm = TRUE), .groups = "drop")
 
-# ============================================================================
 # 3. CALCULATE GROWTH RATES (1990-2020)
-# ============================================================================
 
 gdp_growth <- gdp_trends %>%
   group_by(Continent) %>%
@@ -70,9 +62,7 @@ gdp_growth <- gdp_trends %>%
     .groups = "drop"
   )
 
-# ============================================================================
 # 4. CALCULATE NEET CHANGE (2015-2020)
-# ============================================================================
 
 neet_change <- neet_trends %>%
   filter(year %in% c(2015, 2020)) %>%
@@ -85,9 +75,7 @@ neet_change <- neet_trends %>%
   ) %>%
   filter(!is.na(neet_2015) & !is.na(neet_2020))
 
-# ============================================================================
 # 5. PREPARE SCATTER PLOT DATA (2020)
-# ============================================================================
 
 scatter_data <- gdp_clean %>%
   filter(year == 2020) %>%
@@ -97,9 +85,7 @@ scatter_data <- gdp_clean %>%
   ) %>%
   filter(!is.na(neet_rate))
 
-# ============================================================================
 # 6. VISUALIZATION 1: GDP TRENDS (1990-2020)
-# ============================================================================
 
 plot1 <- ggplot(gdp_trends, aes(x = year, y = avg_gdp, color = Continent)) +
   geom_line(size = 1.2) +
@@ -128,9 +114,7 @@ plot1 <- ggplot(gdp_trends, aes(x = year, y = avg_gdp, color = Continent)) +
 print(plot1)
 ggsave("1_gdp_trends.png", plot1, width = 12, height = 6, dpi = 300)
 
-# ============================================================================
 # 7. VISUALIZATION 2: ANNUAL GROWTH RATES
-# ============================================================================
 
 plot2 <- ggplot(gdp_growth, aes(x = reorder(Continent, annual_growth), y = annual_growth, fill = Continent)) +
   geom_col() +
@@ -162,9 +146,7 @@ plot2 <- ggplot(gdp_growth, aes(x = reorder(Continent, annual_growth), y = annua
 print(plot2)
 ggsave("2_growth_rates.png", plot2, width = 10, height = 6, dpi = 300)
 
-# ============================================================================
 # 8. VISUALIZATION 3: NEET TRENDS (1990-2020)
-# ============================================================================
 
 plot3 <- ggplot(neet_trends, aes(x = year, y = avg_neet, color = Continent)) +
   geom_line(size = 1.2) +
@@ -192,9 +174,7 @@ plot3 <- ggplot(neet_trends, aes(x = year, y = avg_neet, color = Continent)) +
 print(plot3)
 ggsave("3_neet_trends.png", plot3, width = 12, height = 6, dpi = 300)
 
-# ============================================================================
 # 9. VISUALIZATION 4: NEET CHANGE (2015 vs 2020)
-# ============================================================================
 
 plot4 <- ggplot(neet_change, aes(x = reorder(Continent, change), y = change, fill = change < 0)) +
   geom_col() +
@@ -219,9 +199,7 @@ plot4 <- ggplot(neet_change, aes(x = reorder(Continent, change), y = change, fil
 print(plot4)
 ggsave("4_neet_change.png", plot4, width = 10, height = 6, dpi = 300)
 
-# ============================================================================
 # 10. VISUALIZATION 5: GDP vs NEET CORRELATION (2020)
-# ============================================================================
 
 plot5 <- ggplot(scatter_data, aes(x = gdp_per_capita, y = neet_rate, color = Continent)) +
   geom_point(size = 3, alpha = 0.7) +
@@ -251,9 +229,7 @@ plot5 <- ggplot(scatter_data, aes(x = gdp_per_capita, y = neet_rate, color = Con
 print(plot5)
 ggsave("5_gdp_vs_neet.png", plot5, width = 12, height = 7, dpi = 300)
 
-# ============================================================================
 # 11. PRINT SUMMARY TABLES
-# ============================================================================
 
 cat("\n========================================\n")
 cat("GDP GROWTH RATES (1990-2020)\n")
@@ -279,9 +255,7 @@ if (correlation < 0) {
   cat("Interpretation: Positive correlation - higher GDP tends to associate with higher NEET rates\n")
 }
 
-# ============================================================================
 # 12. EXPORT SUMMARY DATA
-# ============================================================================
 
 write_csv(gdp_growth, "summary_gdp_growth.csv")
 write_csv(neet_change, "summary_neet_change.csv")
@@ -301,20 +275,12 @@ cat("  - summary_neet_change.csv\n")
 cat("  - data_gdp_neet_2020.csv\n")
 cat("========================================\n")
 
-# ============================================================================
 # YOUTH NEET RATES BY CONTINENT - BAR CHART (1990-2022)
-# ============================================================================
 
 library(tidyverse)
 library(ggplot2)
 
-# Set working directory to where your CSV files are located
-# setwd("YOUR_PATH_HERE")
-
-# ============================================================================
 # 1. LOAD AND CLEAN DATA
-# ============================================================================
-
 # Load continents data
 continents <- read_csv("Continents according to Our World in Data.csv")
 continents_clean <- continents %>%
@@ -334,17 +300,13 @@ neet_clean <- neet %>%
   filter(Continent %in% c("Africa", "Asia", "Europe", "North America", "South America", "Oceania")) %>%
   filter(!is.na(neet_rate))
 
-# ============================================================================
 # 2. CALCULATE AVERAGE NEET RATES BY CONTINENT AND YEAR
-# ============================================================================
 
 neet_by_continent_year <- neet_clean %>%
   group_by(Continent, year) %>%
   summarise(avg_neet = mean(neet_rate, na.rm = TRUE), .groups = "drop")
 
-# ============================================================================
 # 3. CREATE BAR CHART
-# ============================================================================
 
 # Define continent colors
 continent_colors <- c(
@@ -387,9 +349,7 @@ ggsave("neet_rates_bar_chart_1990_2022.png",
        height = 7, 
        dpi = 300)
 
-# ============================================================================
 # 4. ALTERNATIVE: FACETED BAR CHART (One chart per continent)
-# ============================================================================
 
 plot_neet_faceted <- ggplot(neet_by_continent_year, 
                             aes(x = as.factor(year), y = avg_neet, fill = Continent)) +
@@ -418,9 +378,7 @@ ggsave("neet_rates_faceted_1990_2022.png",
        height = 8, 
        dpi = 300)
 
-# ============================================================================
 # 5. ALTERNATIVE: GROUPED BAR CHART (Select Years Only)
-# ============================================================================
 
 # Select specific years
 selected_years <- c(1990, 1995, 2000, 2005, 2010, 2015, 2020, 2022)
@@ -456,9 +414,7 @@ ggsave("neet_rates_selected_years.png",
        height = 6, 
        dpi = 300)
 
-# ============================================================================
 # 6. PRINT SUMMARY STATISTICS
-# ============================================================================
 
 cat("\n========================================\n")
 cat("NEET RATES SUMMARY (1990-2022)\n")
