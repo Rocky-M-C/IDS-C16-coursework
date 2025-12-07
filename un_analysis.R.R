@@ -300,3 +300,193 @@ cat("  - summary_gdp_growth.csv\n")
 cat("  - summary_neet_change.csv\n")
 cat("  - data_gdp_neet_2020.csv\n")
 cat("========================================\n")
+
+# ============================================================================
+# YOUTH NEET RATES BY CONTINENT - BAR CHART (1990-2022)
+# ============================================================================
+
+library(tidyverse)
+library(ggplot2)
+
+# Set working directory to where your CSV files are located
+# setwd("YOUR_PATH_HERE")
+
+# ============================================================================
+# 1. LOAD AND CLEAN DATA
+# ============================================================================
+
+# Load continents data
+continents <- read_csv("Continents according to Our World in Data.csv")
+continents_clean <- continents %>%
+  select(Entity, Continent) %>%
+  distinct()
+
+# Load NEET data
+neet <- read_csv("youthnotineducationemploymenttraining.csv")
+neet_clean <- neet %>%
+  rename(
+    country = Entity, 
+    year = Year, 
+    neet_rate = `Share of youth not in education, employment or training, total (% of youth population)`
+  ) %>%
+  filter(year >= 1990, year <= 2022) %>%
+  left_join(continents_clean, by = c("country" = "Entity")) %>%
+  filter(Continent %in% c("Africa", "Asia", "Europe", "North America", "South America", "Oceania")) %>%
+  filter(!is.na(neet_rate))
+
+# ============================================================================
+# 2. CALCULATE AVERAGE NEET RATES BY CONTINENT AND YEAR
+# ============================================================================
+
+neet_by_continent_year <- neet_clean %>%
+  group_by(Continent, year) %>%
+  summarise(avg_neet = mean(neet_rate, na.rm = TRUE), .groups = "drop")
+
+# ============================================================================
+# 3. CREATE BAR CHART
+# ============================================================================
+
+# Define continent colors
+continent_colors <- c(
+  "Africa" = "#e74c3c",
+  "Asia" = "#3498db",
+  "Europe" = "#2ecc71",
+  "North America" = "#f39c12",
+  "South America" = "#9b59b6",
+  "Oceania" = "#1abc9c"
+)
+
+# Create the bar chart
+plot_neet_bars <- ggplot(neet_by_continent_year, 
+                         aes(x = as.factor(year), y = avg_neet, fill = Continent)) +
+  geom_col(position = "dodge", width = 0.8) +
+  scale_fill_manual(values = continent_colors) +
+  labs(
+    title = "Youth NEET Rates by Continent (1990-2022)",
+    subtitle = "Average share of youth not in education, employment or training",
+    x = "Year",
+    y = "NEET Rate (%)",
+    fill = "Continent"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 11),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    legend.position = "right",
+    panel.grid.major.x = element_blank()
+  )
+
+# Display the plot
+print(plot_neet_bars)
+
+# Save the plot
+ggsave("neet_rates_bar_chart_1990_2022.png", 
+       plot_neet_bars, 
+       width = 16, 
+       height = 7, 
+       dpi = 300)
+
+# ============================================================================
+# 4. ALTERNATIVE: FACETED BAR CHART (One chart per continent)
+# ============================================================================
+
+plot_neet_faceted <- ggplot(neet_by_continent_year, 
+                            aes(x = as.factor(year), y = avg_neet, fill = Continent)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~Continent, nrow = 2) +
+  scale_fill_manual(values = continent_colors) +
+  labs(
+    title = "Youth NEET Rates by Continent (1990-2022)",
+    subtitle = "Faceted view - each panel shows one continent",
+    x = "Year",
+    y = "NEET Rate (%)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 7),
+    strip.text = element_text(face = "bold", size = 11),
+    panel.grid.major.x = element_blank()
+  )
+
+print(plot_neet_faceted)
+
+ggsave("neet_rates_faceted_1990_2022.png", 
+       plot_neet_faceted, 
+       width = 14, 
+       height = 8, 
+       dpi = 300)
+
+# ============================================================================
+# 5. ALTERNATIVE: GROUPED BAR CHART (Select Years Only)
+# ============================================================================
+
+# Select specific years
+selected_years <- c(1990, 1995, 2000, 2005, 2010, 2015, 2020, 2022)
+
+neet_selected_years <- neet_by_continent_year %>%
+  filter(year %in% selected_years)
+
+plot_neet_selected <- ggplot(neet_selected_years, 
+                             aes(x = as.factor(year), y = avg_neet, fill = Continent)) +
+  geom_col(position = "dodge", width = 0.8) +
+  scale_fill_manual(values = continent_colors) +
+  labs(
+    title = "Youth NEET Rates by Continent - Key Years (1990-2022)",
+    subtitle = "Average share of youth not in education, employment or training",
+    x = "Year",
+    y = "NEET Rate (%)",
+    fill = "Continent"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 11),
+    axis.text.x = element_text(size = 10),
+    legend.position = "right",
+    panel.grid.major.x = element_blank()
+  )
+
+print(plot_neet_selected)
+
+ggsave("neet_rates_selected_years.png", 
+       plot_neet_selected, 
+       width = 12, 
+       height = 6, 
+       dpi = 300)
+
+# ============================================================================
+# 6. PRINT SUMMARY STATISTICS
+# ============================================================================
+
+cat("\n========================================\n")
+cat("NEET RATES SUMMARY (1990-2022)\n")
+cat("========================================\n\n")
+
+summary_stats <- neet_by_continent_year %>%
+  group_by(Continent) %>%
+  summarise(
+    min_neet = min(avg_neet),
+    max_neet = max(avg_neet),
+    avg_neet = mean(avg_neet),
+    latest_year = max(year),
+    latest_neet = avg_neet[year == max(year)]
+  )
+
+print(summary_stats)
+
+# Export summary data
+write_csv(neet_by_continent_year, "neet_rates_by_continent_1990_2022.csv")
+write_csv(summary_stats, "neet_summary_statistics.csv")
+
+cat("\n========================================\n")
+cat("CHARTS CREATED SUCCESSFULLY!\n")
+cat("========================================\n")
+cat("Generated files:\n")
+cat("  - neet_rates_bar_chart_1990_2022.png (all years, grouped)\n")
+cat("  - neet_rates_faceted_1990_2022.png (separate panel per continent)\n")
+cat("  - neet_rates_selected_years.png (key years only)\n")
+cat("  - neet_rates_by_continent_1990_2022.csv (data export)\n")
+cat("  - neet_summary_statistics.csv (summary stats)\n")
+cat("========================================\n")
