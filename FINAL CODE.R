@@ -279,7 +279,7 @@ Suc_Bar <- ggplot(LDC_Table, aes(x= reorder(Country, Mean_Miss), y= Mean_Miss, f
   
   geom_hline(yintercept = 0, colour = "black", linewidth = 1) + 
   labs(
-    title= "Weighted Average Differnce to 7% Target" , 
+    title= "Weighted Average difference to 7% Target" , 
     x = "Country Name" ,
     y = "Weighted Average Difference" ,
     fill = "continent" 
